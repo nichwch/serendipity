@@ -37,13 +37,13 @@ export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 							timeout={300}
 							classNames="slide-anim"
 						>
-							<Slide key={index - 1} position="left">
+							<Slide key={index - 1} className="left">
 								{props.slides[index - 1]}
 							</Slide>
 						</CSSTransition>
 					) : null}
 					<CSSTransition key={index} timeout={300} classNames="slide-anim">
-						<Slide key={index} position="center">
+						<Slide key={index} className="center">
 							{props.slides[index]}
 						</Slide>
 					</CSSTransition>
@@ -53,7 +53,7 @@ export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 							timeout={300}
 							classNames="slide-anim"
 						>
-							<Slide key={index + 1} position="right">
+							<Slide key={index + 1} className="right">
 								{props.slides[index + 1]}
 							</Slide>
 						</CSSTransition>
@@ -67,43 +67,42 @@ export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 	);
 };
 
-const SLIDE_WIDTH = 500;
-const Slide = styled.div<{ position: "left" | "center" | "right" }>`
+const Slide = styled.div`
+	--slide-width: 500;
+
 	position: absolute;
 	display: inline-block;
-	width: ${SLIDE_WIDTH}px;
+	width: calc((var(--slide-width) * 1px));
 	height: 400px;
 	background-color: ${DarkenMedium};
 	border-radius: 30px;
 	padding: 10px;
 	&.slide-anim-enter {
-	opacity: 0;
+		opacity: 0;
 	}
 	&.slide-anim-enter-active {
-	opacity: 1;
-	transition: opacity 300ms;
+		opacity: 1;
+		transition: opacity 300ms;
 	}
 	&.slide-anim-exit {
-	opacity: 1;
+		opacity: 1;
 	}
 
 	&.slide-anim-exit-active {
-	opacity: 0;
-	transition: opacity 300ms;
+		opacity: 0;
+		transition: opacity 300ms;
+	}
+	&.left {
+		transform: translateX(calc(((var(--slide-width) / 2) * -1px)));
+	}
+	&.center {
+		transform: translateX(calc(50vw - ((var(--slide-width) / 2) * 1px)));
+	}
+	&.right {
+		transform: translateX(calc(100vw - ((var(--slide-width) / 2) * 1px)));
 	}
 
-	transform: ${(props) => {
-		if (props.position === "left") return "translateX(-250px);";
-		if (props.position === "center")
-			return "translateX(  calc( 50vw - 250px ) ) ;";
-		if (props.position === "right") return "translateX( calc(100vw - 250px) );";
-	}}
-
 	transition: transform 0.3s;
-
-
-
-
 `;
 
 const SlidesContainer = styled.div`
