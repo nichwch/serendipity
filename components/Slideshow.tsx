@@ -34,7 +34,10 @@ export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 					{index > 0 ? (
 						<CSSTransition
 							key={index - 1}
-							timeout={300}
+							timeout={{
+								enter: 600,
+								exit: 300,
+							}}
 							classNames="slide-anim"
 						>
 							<Slide key={index - 1} className="left">
@@ -42,7 +45,14 @@ export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 							</Slide>
 						</CSSTransition>
 					) : null}
-					<CSSTransition key={index} timeout={300} classNames="slide-anim">
+					<CSSTransition
+						key={index}
+						timeout={{
+							enter: 600,
+							exit: 300,
+						}}
+						classNames="slide-anim"
+					>
 						<Slide key={index} className="center">
 							{props.slides[index]}
 						</Slide>
@@ -50,7 +60,10 @@ export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 					{index < props.slides.length - 1 ? (
 						<CSSTransition
 							key={index + 1}
-							timeout={300}
+							timeout={{
+								enter: 600,
+								exit: 300,
+							}}
 							classNames="slide-anim"
 						>
 							<Slide key={index + 1} className="right">
@@ -68,12 +81,12 @@ export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 };
 
 const Slide = styled.div`
-	--slide-width: 500;
+	--slide-width: 700;
 
 	position: absolute;
 	display: inline-block;
 	width: calc((var(--slide-width) * 1px));
-	height: 400px;
+	height: 500px;
 	background-color: ${DarkenMedium};
 	border-radius: 30px;
 	padding: 10px;
@@ -82,7 +95,7 @@ const Slide = styled.div`
 	}
 	&.slide-anim-enter-active {
 		opacity: 1;
-		transition: opacity 300ms;
+		transition: opacity 300ms 300ms;
 	}
 	&.slide-anim-exit {
 		opacity: 1;
@@ -93,21 +106,21 @@ const Slide = styled.div`
 		transition: opacity 300ms;
 	}
 	&.left {
-		transform: translateX(calc(((var(--slide-width) / 2) * -1px)));
+		transform: translateX(calc(((var(--slide-width) * (3 / 4)) * -1px)));
 	}
 	&.center {
 		transform: translateX(calc(50vw - ((var(--slide-width) / 2) * 1px)));
 	}
 	&.right {
-		transform: translateX(calc(100vw - ((var(--slide-width) / 2) * 1px)));
+		transform: translateX(calc(100vw - (((var(--slide-width) / 4) * 1px))));
 	}
 
-	transition: transform 0.3s;
+	transition: transform 0.5s;
 `;
 
 const SlidesContainer = styled.div`
 	position: relative;
-	height: 500px;
+	height: 600px;
 	width: 100vw;
 	overflow-x: hidden;
 `;
