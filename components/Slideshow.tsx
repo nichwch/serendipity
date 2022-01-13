@@ -1,25 +1,43 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { DarkenMedium, DarkenSlightly } from "../config/theme";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+
 export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 	const [index, setIndex] = useState(props.initialIndex);
 
 	return (
 		<>
 			<SlidesContainer>
-				{index > 0 ? (
-					<Slide key={index - 1} position="left">
-						{props.slides[index - 1]}
-					</Slide>
-				) : null}
-				<Slide key={index} position="center">
-					{props.slides[index]}
-				</Slide>
-				{index < props.slides.length - 1 ? (
-					<Slide key={index + 1} position="right">
-						{props.slides[index + 1]}
-					</Slide>
-				) : null}
+				<TransitionGroup>
+					{index > 0 ? (
+						<CSSTransition
+							key={index - 1}
+							timeout={300}
+							classNames="slide-anim"
+						>
+							<Slide key={index - 1} position="left">
+								{props.slides[index - 1]}
+							</Slide>
+						</CSSTransition>
+					) : null}
+					<CSSTransition key={index} timeout={300} classNames="slide-anim">
+						<Slide key={index} position="center">
+							{props.slides[index]}
+						</Slide>
+					</CSSTransition>
+					{index < props.slides.length - 1 ? (
+						<CSSTransition
+							key={index + 1}
+							timeout={300}
+							classNames="slide-anim"
+						>
+							<Slide key={index + 1} position="right">
+								{props.slides[index + 1]}
+							</Slide>
+						</CSSTransition>
+					) : null}
+				</TransitionGroup>
 			</SlidesContainer>
 			<button
 				onClick={() => {
@@ -49,31 +67,34 @@ const Slide = styled.div<{ position: "left" | "center" | "right" }>`
 	background-color: ${DarkenMedium};
 	border-radius: 30px;
 	padding: 10px;
-	margin: 10px;
-
-	left: ${(props) => {
-		if (props.position === "left") {
-			return "-500px;";
-		}
-		if (props.position === "center") {
-			return `${1 * (SLIDE_WIDTH + 10)}px;`;
-		}
-		if (props.position === "right") {
-			return "calc(100vw - 100px);";
-		}
-	}};
-
-	transition: left 0.5s;
-
-	@keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
+	&.slide-anim-enter {
+	opacity: 0;
 	}
-	animation: fadein 0.2s;
+	&.slide-anim-enter-active {
+	opacity: 1;
+	transition: opacity 300ms;
+	}
+	&.slide-anim-exit {
+	opacity: 1;
+	}
+
+	&.slide-anim-exit-active {
+	opacity: 0;
+	transition: opacity 300ms;
+	}
+
+	transform: ${(props) => {
+		if (props.position === "left") return "translateX(-250px);";
+		if (props.position === "center")
+			return "translateX(  calc( 50vw - 250px ) ) ;";
+		if (props.position === "right") return "translateX( calc(100vw - 250px) );";
+	}}
+
+	transition: transform 0.3s;
+
+
+
+
 `;
 
 const SlidesContainer = styled.div`

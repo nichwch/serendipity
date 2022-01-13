@@ -12,8 +12,12 @@ function MyApp({ Component, pageProps }) {
 
 export default MyApp;
 const GlobalStyle = createGlobalStyle`
-  html{
+  html,body{
     font-family: Inter, serif;
-    color:${offBlack}
+    color:${offBlack};
+	padding:0px;
+	margin:0px;
+	height:100vh;
+	width:100vw;
   }
 `;
