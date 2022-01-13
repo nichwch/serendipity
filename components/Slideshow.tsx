@@ -1,10 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { DarkenMedium, DarkenSlightly } from "../config/theme";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 	const [index, setIndex] = useState(props.initialIndex);
+
+	const slideLeft = () => {
+		setIndex(Math.max(index - 1, 0));
+	};
+	const slideRight = () => {
+		setIndex(Math.min(index + 1, props.slides.length - 1));
+	};
+
+	useEffect(() => {
+		const handleKeypress = (evt) => {
+			if (evt?.code === "ArrowRight") {
+				setIndex(Math.min(index + 1, props.slides.length - 1));
+			} else if (evt?.code === "ArrowLeft") {
+				setIndex(Math.max(index - 1, 0));
+			}
+		};
+		document.addEventListener("keydown", handleKeypress);
+		return () => {
+			document.removeEventListener("keydown", handleKeypress);
+		};
+	}, [index, props.slides.length]);
 
 	return (
 		<>
@@ -39,20 +60,8 @@ export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 					) : null}
 				</TransitionGroup>
 			</SlidesContainer>
-			<button
-				onClick={() => {
-					setIndex(Math.max(index - 1, 0));
-				}}
-			>
-				left
-			</button>
-			<button
-				onClick={() => {
-					setIndex(Math.min(index + 1, props.slides.length - 1));
-				}}
-			>
-				right
-			</button>
+			<button onClick={slideLeft}>left</button>
+			<button onClick={slideRight}>right</button>
 			{index}
 		</>
 	);
@@ -98,6 +107,7 @@ const Slide = styled.div<{ position: "left" | "center" | "right" }>`
 `;
 
 const SlidesContainer = styled.div`
+	position: relative;
 	height: 500px;
 	width: 100vw;
 	overflow-x: hidden;
