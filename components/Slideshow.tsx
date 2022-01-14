@@ -90,6 +90,7 @@ const Slide = styled.div`
 	background-color: ${DarkenMedium};
 	border-radius: 30px;
 	padding: 10px;
+	left: 0px;
 	&.slide-anim-enter {
 		opacity: 0;
 	}
@@ -106,13 +107,13 @@ const Slide = styled.div`
 		transition: opacity 300ms;
 	}
 	&.left {
-		transform: translateX(calc(((var(--slide-width) * (3 / 4)) * -1px)));
+		transform: translateX(calc(((var(--slide-width) * (5 / 6)) * -1px)));
 	}
 	&.center {
 		transform: translateX(calc(50vw - ((var(--slide-width) / 2) * 1px)));
 	}
 	&.right {
-		transform: translateX(calc(100vw - (((var(--slide-width) / 4) * 1px))));
+		transform: translateX(calc(100vw - (((var(--slide-width) / 6) * 1px))));
 	}
 
 	transition: transform 0.5s;
