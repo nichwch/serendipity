@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { DarkenMedium, DarkenSlightly } from "../config/theme";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { SlideComponent, SlideEntity } from "./SlideEditor/SlideEntity";
 
-export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
+export const Slideshow = (props: {
+	slides: SlideEntity[][];
+	initialIndex: number;
+}) => {
 	const [index, setIndex] = useState(props.initialIndex);
 
 	const slideLeft = () => {
@@ -41,7 +45,7 @@ export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 							classNames="slide-anim"
 						>
 							<Slide key={index - 1} className="left">
-								{props.slides[index - 1]}
+								<SlideComponent slideEntities={props.slides[index - 1]} />
 							</Slide>
 						</CSSTransition>
 					) : null}
@@ -54,7 +58,7 @@ export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 						classNames="slide-anim"
 					>
 						<Slide key={index} className="center">
-							{props.slides[index]}
+							<SlideComponent slideEntities={props.slides[index]} />
 						</Slide>
 					</CSSTransition>
 					{index < props.slides.length - 1 ? (
@@ -67,7 +71,7 @@ export const Slideshow = (props: { slides: any[]; initialIndex: number }) => {
 							classNames="slide-anim"
 						>
 							<Slide key={index + 1} className="right">
-								{props.slides[index + 1]}
+								<SlideComponent slideEntities={props.slides[index + 1]} />
 							</Slide>
 						</CSSTransition>
 					) : null}

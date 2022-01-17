@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { exampleSlides } from "../components/SlideEditor/exampleSlides";
 import { Slideshow } from "../components/Slideshow";
 
 export default function Home() {
@@ -10,7 +11,7 @@ export default function Home() {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<h1>Serendipity</h1>
-			<Slideshow slides={[1, 2, 3, 4, 5, 6, 7, 8]} initialIndex={0} />
+			<Slideshow slides={exampleSlides} initialIndex={0} />
 		</div>
 	);
 }
