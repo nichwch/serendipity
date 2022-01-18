@@ -20,4 +20,9 @@ const GlobalStyle = createGlobalStyle`
 	height:100vh;
 	width:100vw;
   }
+
+/* debug */
+  /* *{
+	  outline:1px solid red;
+  } */
 `;

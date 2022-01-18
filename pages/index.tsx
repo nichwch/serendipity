@@ -1,8 +1,15 @@
 import Head from "next/head";
+import create from "zustand";
 import { exampleSlides } from "../components/SlideEditor/exampleSlides";
+import { SlideEntity } from "../components/SlideEditor/SlideEntity";
 import { Slideshow } from "../components/Slideshow";
 
+export const useSlideStore = create<{ slides: SlideEntity[][] }>(() => ({
+	slides: exampleSlides,
+}));
+
 export default function Home() {
+	const { slides } = useSlideStore();
 	return (
 		<div>
 			<Head>
@@ -11,7 +18,7 @@ export default function Home() {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<h1>Serendipity</h1>
-			<Slideshow slides={exampleSlides} initialIndex={0} />
+			<Slideshow slides={slides} initialIndex={0} />
 		</div>
 	);
 }

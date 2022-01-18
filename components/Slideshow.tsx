@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { DarkenMedium, DarkenSlightly } from "../config/theme";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -31,10 +31,15 @@ export const Slideshow = (props: {
 		};
 	}, [index, props.slides.length]);
 
+	const leftSlideRef = useRef<HTMLElement>(null);
+	const middleSlideRef = useRef<HTMLElement>(null);
+	const rightSlideRef = useRef<HTMLElement>(null);
+
 	return (
 		<>
 			<SlidesContainer>
 				<TransitionGroup>
+					{/* left slide */}
 					{index > 0 ? (
 						<CSSTransition
 							key={index - 1}
@@ -44,11 +49,16 @@ export const Slideshow = (props: {
 							}}
 							classNames="slide-anim"
 						>
-							<Slide key={index - 1} className="left">
-								<SlideComponent slideEntities={props.slides[index - 1]} />
+							<Slide key={index - 1} className="left" ref={leftSlideRef}>
+								<SlideComponent
+									slideEntities={props.slides[index - 1]}
+									slideIndex={index - 1}
+									slideRef={leftSlideRef}
+								/>
 							</Slide>
 						</CSSTransition>
 					) : null}
+					{/* middle slide - the one that's in focus */}
 					<CSSTransition
 						key={index}
 						timeout={{
@@ -57,10 +67,15 @@ export const Slideshow = (props: {
 						}}
 						classNames="slide-anim"
 					>
-						<Slide key={index} className="center">
-							<SlideComponent slideEntities={props.slides[index]} />
+						<Slide key={index} className="center" ref={middleSlideRef}>
+							<SlideComponent
+								slideEntities={props.slides[index]}
+								slideIndex={index}
+								slideRef={middleSlideRef}
+							/>
 						</Slide>
 					</CSSTransition>
+					{/* right slide */}
 					{index < props.slides.length - 1 ? (
 						<CSSTransition
 							key={index + 1}
@@ -70,8 +85,12 @@ export const Slideshow = (props: {
 							}}
 							classNames="slide-anim"
 						>
-							<Slide key={index + 1} className="right">
-								<SlideComponent slideEntities={props.slides[index + 1]} />
+							<Slide key={index + 1} className="right" ref={rightSlideRef}>
+								<SlideComponent
+									slideEntities={props.slides[index + 1]}
+									slideIndex={index + 1}
+									slideRef={rightSlideRef}
+								/>
 							</Slide>
 						</CSSTransition>
 					) : null}
