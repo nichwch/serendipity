@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSlideStore } from "../../pages";
 export interface SlideInterface {
@@ -17,7 +17,33 @@ export interface ImageElement extends SlideInterface {
 }
 
 export type SlideEntity = TextElement | ImageElement;
+const useMousePosition = () => {
+	const [position, setPosition] = useState({
+		clientX: 0,
+		clientY: 0,
+	});
 
+	const updatePosition = (event) => {
+		const { pageX, pageY, clientX, clientY } = event;
+
+		setPosition({
+			clientX,
+			clientY,
+		});
+	};
+
+	useEffect(() => {
+		document.addEventListener("mousemove", updatePosition, false);
+		document.addEventListener("mouseenter", updatePosition, false);
+
+		return () => {
+			document.removeEventListener("mousemove", updatePosition);
+			document.removeEventListener("mouseenter", updatePosition);
+		};
+	}, []);
+
+	return position;
+};
 export const SlideComponent = (props: {
 	slideEntities: SlideEntity[];
 	slideIndex: number;
@@ -47,6 +73,12 @@ export const SlideEntityRenderer = (props: {
 
 	slideRef: React.Ref<HTMLElement>;
 }) => {
+	const { clientX, clientY } = useMousePosition();
+	let { xPos, yPos } = getPercentPosition(
+		props.slideRef?.current?.getBoundingClientRect(),
+		clientX,
+		clientY
+	);
 	const [isDragging, setIsDragging] = useState(false);
 	const { slideEntity } = props;
 	const { slides } = useSlideStore();
@@ -55,40 +87,20 @@ export const SlideEntityRenderer = (props: {
 			style={{
 				opacity: isDragging ? 0.2 : 1,
 			}}
-			draggable={true}
-			xPos={slideEntity.xPos}
-			yPos={slideEntity.yPos}
-			onDragStart={(e) => {
+			xPos={isDragging ? xPos : slideEntity.xPos}
+			yPos={isDragging ? yPos : slideEntity.yPos}
+			onMouseDown={(e) => {
 				setIsDragging(true);
-				// e.preventDefault();
+				e.preventDefault();
 			}}
-			onDragEnd={(e) => {
-				let newPosition = getPercentPosition(
-					props.slideRef?.current?.getBoundingClientRect(),
-					e.clientX,
-					e.clientY
-				);
-				console.log(
-					"drop",
-					e,
-					props.slideRef?.current?.getBoundingClientRect(),
-					newPosition
-				);
-
+			onMouseUp={(e) => {
+				setIsDragging(false);
 				let newSlides = [...slides];
-				if (
-					newPosition.xPos < 100 &&
-					newPosition.xPos > 0 &&
-					newPosition.yPos < 100 &&
-					newPosition.yPos > 0
-				) {
-					newSlides[props.slideIndex][props.entityIndex].xPos =
-						newPosition.xPos;
-					newSlides[props.slideIndex][props.entityIndex].yPos =
-						newPosition.yPos;
+				if (xPos < 100 && xPos > 0 && yPos < 100 && yPos > 0) {
+					newSlides[props.slideIndex][props.entityIndex].xPos = xPos;
+					newSlides[props.slideIndex][props.entityIndex].yPos = yPos;
 				}
 				useSlideStore.setState({ slides: newSlides });
-				setIsDragging(false);
 				e.preventDefault();
 			}}
 		>
@@ -109,6 +121,9 @@ function getPercentPosition(
 	xPos: number;
 	yPos: number;
 } {
+	if (!boundingRect) {
+		return { xPos: 0, yPos: 0 };
+	}
 	let slideWidth = boundingRect.width;
 	let slideHeight = boundingRect.height;
 	let xSlideOffset = x - boundingRect.left;
