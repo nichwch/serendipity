@@ -19,7 +19,7 @@ const GlobalStyle = createGlobalStyle`
 	margin:0px;
 	height:100vh;
 	width:100vw;
-	background-color: #eaeaea;
+	background-color: #f7f7f7;
   }
 
 /* debug */

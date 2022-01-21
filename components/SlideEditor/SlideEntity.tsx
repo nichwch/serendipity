@@ -23,12 +23,14 @@ export const SlideComponent = (props: {
 	slideEntities: SlideEntity[];
 	slideIndex: number;
 	slideRef: React.Ref<HTMLElement>;
+	editable: boolean;
 }) => {
 	return (
 		<>
 			{props.slideEntities.map((slideEntity, entityIndex) => {
 				return (
 					<SlideEntityRenderer
+						editable={props.editable}
 						key={entityIndex}
 						slideEntity={slideEntity}
 						entityIndex={entityIndex}
@@ -42,19 +44,19 @@ export const SlideComponent = (props: {
 };
 
 export const SlideEntityRenderer = (props: {
+	editable: boolean;
 	slideEntity: SlideEntity;
 	entityIndex: number;
 	slideIndex: number;
-
 	slideRef: React.Ref<HTMLElement>;
 }) => {
+	const [isDragging, setIsDragging] = useState(false);
 	const { clientX, clientY } = useMousePosition();
 	let { xPos, yPos } = getPercentPosition(
 		props.slideRef?.current?.getBoundingClientRect(),
 		clientX,
 		clientY
 	);
-	const [isDragging, setIsDragging] = useState(false);
 	const { slideEntity } = props;
 	const { slides } = useSlideStore();
 	return (
@@ -64,20 +66,28 @@ export const SlideEntityRenderer = (props: {
 			}}
 			xPos={isDragging ? xPos : slideEntity.xPos}
 			yPos={isDragging ? yPos : slideEntity.yPos}
-			onMouseDown={(e) => {
-				setIsDragging(true);
-				e.preventDefault();
-			}}
-			onMouseUp={(e) => {
-				setIsDragging(false);
-				let newSlides = [...slides];
-				if (xPos < 100 && xPos > 0 && yPos < 100 && yPos > 0) {
-					newSlides[props.slideIndex][props.entityIndex].xPos = xPos;
-					newSlides[props.slideIndex][props.entityIndex].yPos = yPos;
-				}
-				useSlideStore.setState({ slides: newSlides });
-				e.preventDefault();
-			}}
+			onMouseDown={
+				props.editable
+					? (e) => {
+							setIsDragging(true);
+							e.preventDefault();
+					  }
+					: null
+			}
+			onMouseUp={
+				props.editable
+					? (e) => {
+							setIsDragging(false);
+							let newSlides = [...slides];
+							if (xPos < 100 && xPos > 0 && yPos < 100 && yPos > 0) {
+								newSlides[props.slideIndex][props.entityIndex].xPos = xPos;
+								newSlides[props.slideIndex][props.entityIndex].yPos = yPos;
+							}
+							useSlideStore.setState({ slides: newSlides });
+							e.preventDefault();
+					  }
+					: null
+			}
 		>
 			{slideEntity.type === "text" ? <p>{slideEntity.content}</p> : null}
 			{slideEntity.type === "image" ? <p>{slideEntity.imgcontent}</p> : null}
