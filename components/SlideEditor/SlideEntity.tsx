@@ -63,6 +63,7 @@ export const SlideEntityRenderer = (props: {
 		<Entity
 			style={{
 				opacity: isDragging ? 0.2 : 1,
+				cursor: isDragging ? "grabbing" : "grab",
 			}}
 			xPos={isDragging ? xPos : slideEntity.xPos}
 			yPos={isDragging ? yPos : slideEntity.yPos}
@@ -113,8 +114,8 @@ function getPercentPosition(
 	let slideHeight = boundingRect.height;
 	let xSlideOffset = x - boundingRect.left;
 	let ySlideOffset = y - boundingRect.top;
-	let xPos = (xSlideOffset / slideWidth) * 100;
-	let yPos = (ySlideOffset / slideHeight) * 100;
+	let xPos = (xSlideOffset / slideWidth) * 100 - 1;
+	let yPos = (ySlideOffset / slideHeight) * 100 - 1;
 	return { xPos, yPos };
 }
 
