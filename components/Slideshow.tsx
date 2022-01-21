@@ -58,7 +58,12 @@ export const Slideshow = (props: {
 										<AddCircle height="50px" width="50px" />
 									</ControlButton>
 								</ControlButtonContainer>
-								<Slide key={index - 1} className="left" ref={leftSlideRef}>
+								<Slide
+									onClick={slideLeft}
+									key={index - 1}
+									className="left"
+									ref={leftSlideRef}
+								>
 									<SlideComponent
 										slideEntities={props.slides[index - 1]}
 										slideIndex={index - 1}
@@ -122,7 +127,12 @@ export const Slideshow = (props: {
 										<AddCircle height="50px" width="50px" />
 									</ControlButton>
 								</ControlButtonContainer>
-								<Slide key={index + 1} className="right" ref={rightSlideRef}>
+								<Slide
+									onClick={slideRight}
+									key={index + 1}
+									className="right"
+									ref={rightSlideRef}
+								>
 									<SlideComponent
 										slideEntities={props.slides[index + 1]}
 										slideIndex={index + 1}
