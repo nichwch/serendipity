@@ -163,17 +163,28 @@ const Slide = styled.div`
 	left: 0px;
 	top: 20px;
 
+	transition: transform 0.5s;
 	&.left {
 		transform: translateX(calc(((var(--slide-width) * (5 / 6)) * -1px)));
+		:hover {
+			transform: translateX(
+				calc(((var(--slide-width) * (5 / 6)) * -1px) + 50px)
+			);
+			transition: transform 0.2s;
+		}
 	}
 	&.center {
 		transform: translateX(calc(50vw - ((var(--slide-width) / 2) * 1px)));
 	}
 	&.right {
 		transform: translateX(calc(100vw - (((var(--slide-width) / 6) * 1px))));
+		:hover {
+			transform: translateX(
+				calc(100vw - (((var(--slide-width) / 6) * 1px) + 50px))
+			);
+			transition: transform 0.2s;
+		}
 	}
-
-	transition: transform 0.5s;
 
 	box-shadow: 0px 0px 15px 5px rgba(0, 0, 0, 0.22);
 `;
