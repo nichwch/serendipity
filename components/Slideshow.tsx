@@ -110,10 +110,11 @@ const Slide = styled.div`
 	display: inline-block;
 	width: calc((var(--slide-width) * 1px));
 	height: 500px;
-	background-color: ${DarkenMedium};
+	background-color: white;
 	border-radius: 30px;
 	padding: 10px;
 	left: 0px;
+	top: 20px;
 	&.slide-anim-enter {
 		opacity: 0;
 	}
@@ -140,6 +141,8 @@ const Slide = styled.div`
 	}
 
 	transition: transform 0.5s;
+
+	box-shadow: 0px 0px 15px 5px rgba(0, 0, 0, 0.22);
 `;
 
 const SlidesContainer = styled.div`

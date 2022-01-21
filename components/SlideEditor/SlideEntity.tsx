@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSlideStore } from "../../pages";
+import { useMousePosition } from "../../utils/useMousePosition";
 export interface SlideInterface {
 	xPos: number;
 	yPos: number;
@@ -17,33 +18,7 @@ export interface ImageElement extends SlideInterface {
 }
 
 export type SlideEntity = TextElement | ImageElement;
-const useMousePosition = () => {
-	const [position, setPosition] = useState({
-		clientX: 0,
-		clientY: 0,
-	});
 
-	const updatePosition = (event) => {
-		const { pageX, pageY, clientX, clientY } = event;
-
-		setPosition({
-			clientX,
-			clientY,
-		});
-	};
-
-	useEffect(() => {
-		document.addEventListener("mousemove", updatePosition, false);
-		document.addEventListener("mouseenter", updatePosition, false);
-
-		return () => {
-			document.removeEventListener("mousemove", updatePosition);
-			document.removeEventListener("mouseenter", updatePosition);
-		};
-	}, []);
-
-	return position;
-};
 export const SlideComponent = (props: {
 	slideEntities: SlideEntity[];
 	slideIndex: number;
