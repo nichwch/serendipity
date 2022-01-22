@@ -4,12 +4,16 @@ import { exampleSlides } from "../components/SlideEditor/exampleSlides";
 import { SlideEntity } from "../components/SlideEditor/SlideEntity";
 import { Slideshow } from "../components/Slideshow";
 
-export const useSlideStore = create<{ slides: SlideEntity[][] }>(() => ({
+export const useSlideStore = create<{
+	slides: SlideEntity[][];
+	dragging: boolean;
+}>(() => ({
 	slides: exampleSlides,
+	dragging: false,
 }));
 
 export default function Home() {
-	const { slides } = useSlideStore();
+	const slides = useSlideStore((state) => state.slides);
 	return (
 		<div>
 			<Head>

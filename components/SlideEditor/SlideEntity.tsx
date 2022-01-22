@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useSlideStore } from "../../pages";
+import { isIntersecting } from "../../utils/isIntersecting";
 import { useMousePosition } from "../../utils/useMousePosition";
 export interface SlideInterface {
 	xPos: number;
@@ -24,6 +25,7 @@ export const SlideComponent = (props: {
 	slideIndex: number;
 	slideRef: React.Ref<HTMLElement>;
 	editable: boolean;
+	deleteButtonRef: React.Ref<HTMLElement>;
 }) => {
 	return (
 		<>
@@ -36,6 +38,7 @@ export const SlideComponent = (props: {
 						entityIndex={entityIndex}
 						slideIndex={props.slideIndex}
 						slideRef={props.slideRef}
+						deleteButtonRef={props.deleteButtonRef}
 					/>
 				);
 			})}
@@ -49,28 +52,36 @@ export const SlideEntityRenderer = (props: {
 	entityIndex: number;
 	slideIndex: number;
 	slideRef: React.Ref<HTMLElement>;
+	deleteButtonRef: React.Ref<HTMLElement>;
 }) => {
 	const [isDragging, setIsDragging] = useState(false);
 	const { clientX, clientY } = useMousePosition();
 	let { xPos, yPos } = getPercentPosition(
+		//@ts-ignore
 		props.slideRef?.current?.getBoundingClientRect(),
 		clientX,
 		clientY
 	);
 	const { slideEntity } = props;
 	const { slides } = useSlideStore();
+	const self = useRef<HTMLElement>(null);
+
 	return (
 		<Entity
+			ref={self}
 			style={{
 				opacity: isDragging ? 0.2 : 1,
 				cursor: isDragging ? "grabbing" : "grab",
+				left: `${isDragging ? xPos : slideEntity.xPos}%`,
+				top: `${isDragging ? yPos : slideEntity.yPos}%`,
 			}}
-			xPos={isDragging ? xPos : slideEntity.xPos}
-			yPos={isDragging ? yPos : slideEntity.yPos}
 			onMouseDown={
 				props.editable
 					? (e) => {
 							setIsDragging(true);
+							useSlideStore.setState({
+								dragging: true,
+							});
 							e.preventDefault();
 					  }
 					: null
@@ -79,12 +90,22 @@ export const SlideEntityRenderer = (props: {
 				props.editable
 					? (e) => {
 							setIsDragging(false);
+							// check if intersecting delete button
+							let overDelete = isIntersecting(
+								self?.current?.getBoundingClientRect(),
+								//@ts-ignore
+								props.slideRef?.current?.getBoundingClientRect()
+							);
+							console.log("oer?", overDelete);
+							if (overDelete) {
+								// delete!!!
+							}
 							let newSlides = [...slides];
 							if (xPos < 100 && xPos > 0 && yPos < 100 && yPos > 0) {
 								newSlides[props.slideIndex][props.entityIndex].xPos = xPos;
 								newSlides[props.slideIndex][props.entityIndex].yPos = yPos;
 							}
-							useSlideStore.setState({ slides: newSlides });
+							useSlideStore.setState({ slides: newSlides, dragging: false });
 							e.preventDefault();
 					  }
 					: null
@@ -119,10 +140,7 @@ function getPercentPosition(
 	return { xPos, yPos };
 }
 
-const Entity = styled.div<{ xPos: number; yPos: number }>`
+const Entity = styled.div`
 	position: absolute;
-	left: ${(props) => props.xPos}%;
-	top: ${(props) => props.yPos}%;
-
 	user-select: none;
 `;

@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { DarkenMedium, DarkenSlightly } from "../config/theme";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { SlideComponent, SlideEntity } from "./SlideEditor/SlideEntity";
-import { AddCircle } from "@styled-icons/material";
+import { Add, TextFields, Image, Delete } from "@styled-icons/material";
+import { useSlideStore } from "../pages";
 export const Slideshow = (props: {
 	slides: SlideEntity[][];
 	initialIndex: number;
@@ -34,6 +35,8 @@ export const Slideshow = (props: {
 	const leftSlideRef = useRef<HTMLElement>(null);
 	const middleSlideRef = useRef<HTMLElement>(null);
 	const rightSlideRef = useRef<HTMLElement>(null);
+	const deleteButtonRef = useRef<HTMLElement>(null);
+	const { slides, dragging } = useSlideStore();
 
 	return (
 		<>
@@ -55,7 +58,7 @@ export const Slideshow = (props: {
 									key={`addbutton${index - 1}`}
 								>
 									<ControlButton>
-										<AddCircle height="50px" width="50px" />
+										<Add height="30px" width="30px" />
 									</ControlButton>
 								</ControlButtonContainer>
 								<Slide
@@ -84,26 +87,56 @@ export const Slideshow = (props: {
 						classNames="slide-anim"
 					>
 						<AnimationFrame>
-							<ControlButtonContainer
-								className="center"
-								key={`addbutton${index}`}
-							>
-								<ControlButton class="controlbutton">
-									<AddCircle height="50px" width="50px" />
-								</ControlButton>
-								<HiddenControlButton>
-									<AddCircle height="50px" width="50px" />
-								</HiddenControlButton>
-								<HiddenControlButton>
-									<AddCircle height="50px" width="50px" />
-								</HiddenControlButton>
-							</ControlButtonContainer>
+							{dragging ? (
+								<ControlButtonContainer
+									className="center controlbutton"
+									key={`addbutton${index}`}
+								>
+									<DeleteButton ref={deleteButtonRef}>
+										<Delete height="30px" width="30px" />
+									</DeleteButton>
+								</ControlButtonContainer>
+							) : (
+								<ControlButtonContainer
+									className="center controlbutton"
+									key={`addbutton${index}`}
+								>
+									<ControlButton>
+										<Add height="30px" width="30px" />
+									</ControlButton>
+									<HiddenControlButton
+										index={1}
+										onClick={() => {
+											// add a text element
+											let currentSlide = [...props.slides[index]];
+											currentSlide.push({
+												type: "text",
+												content: "hello world",
+												xPos: 50,
+												yPos: 50,
+												scale: 1,
+											});
+											let newSlides = [...slides];
+											console.log(slides, "slides", newSlides, newSlides);
+											newSlides[index] = currentSlide;
+											useSlideStore.setState({ slides: newSlides });
+										}}
+									>
+										<TextFields height="30px" width="30px" />
+									</HiddenControlButton>
+									<HiddenControlButton index={2}>
+										{/* eslint-disable-next-line jsx-a11y/alt-text */}
+										<Image height="30px" width="30px" />
+									</HiddenControlButton>
+								</ControlButtonContainer>
+							)}
 							<Slide key={index} className="center" ref={middleSlideRef}>
 								<SlideComponent
 									slideEntities={props.slides[index]}
 									slideIndex={index}
 									slideRef={middleSlideRef}
 									editable={true}
+									deleteButtonRef={deleteButtonRef}
 								/>
 							</Slide>
 						</AnimationFrame>
@@ -124,7 +157,7 @@ export const Slideshow = (props: {
 									key={`addbutton${index + 1}`}
 								>
 									<ControlButton>
-										<AddCircle height="50px" width="50px" />
+										<Add height="30px" width="30px" />
 									</ControlButton>
 								</ControlButtonContainer>
 								<Slide
@@ -170,7 +203,7 @@ const Slide = styled.div`
 			transform: translateX(
 				calc(((var(--slide-width) * (5 / 6)) * -1px) + 50px)
 			);
-			transition: transform 0.2s;
+			/* transition: transform 0.2s; */
 		}
 	}
 	&.center {
@@ -182,7 +215,7 @@ const Slide = styled.div`
 			transform: translateX(
 				calc(100vw - (((var(--slide-width) / 6) * 1px) + 50px))
 			);
-			transition: transform 0.2s;
+			/* transition: transform 0.2s; */
 		}
 	}
 
@@ -209,25 +242,58 @@ const AnimationFrame = styled.div`
 
 const ControlButton = styled.button`
 	border: none;
-	background-color: transparent;
-	z-index: 150;
-	color: #0000007a;
+	height: 30px;
+	width: 30px;
+	flex-grow: 0;
+	flex-shrink: 0;
+	background-color: #2525254c;
+	transform: rotate(0deg);
+	padding: 5px;
+	border-radius: 50%;
+	margin-bottom: 5px;
+	transition: transform 0.5s;
 	:hover {
-		color: #000000cc;
+		transform: rotate(360deg);
+		transition: transform 1s;
 	}
 `;
-
-const HiddenControlButton = styled.button`
+const DeleteButton = styled.button`
 	border: none;
-	background-color: transparent;
-	z-index: 150;
-	.controlbutton:hover ~ & {
-		background-color: yellow;
+	height: 30px;
+	width: 30px;
+	flex-grow: 0;
+	flex-shrink: 0;
+	background-color: #f7b1b1;
+	color: #d47777;
+	transform: rotate(0deg);
+	padding: 5px;
+	border-radius: 50%;
+	margin-bottom: 5px;
+	transition: transform 0.5s;
+`;
+
+const HiddenControlButton = styled.button<{ index: number }>`
+	border: none;
+	height: 30px;
+	width: 30px;
+	flex-grow: 0;
+	flex-shrink: 0;
+	background-color: #2525254c;
+	padding: 5px;
+	border-radius: 50%;
+	margin-bottom: 5px;
+	transform: translateY(${(props) => props.index * -50}px);
+	display: block;
+	opacity: 0;
+	.controlbutton:hover > & {
+		transform: translateY(0px);
+		opacity: 1;
 	}
+	transition: opacity 0.4s, transform 0.4s;
 
 	color: #0000007a;
 	:hover {
-		color: #000000cc;
+		background-color: #252525ac;
 	}
 `;
 
@@ -238,19 +304,19 @@ const ControlButtonContainer = styled.div`
 	left: 0px;
 	top: 20px;
 	width: 50px;
-	height: 200px;
+	height: auto;
 
 	&.left {
 		transform: translateX(calc(((var(--slide-width) * (5 / 6)) * -1px)));
 		opacity: 0;
 	}
 	&.center {
-		transform: translateX(calc(50vw - ((var(--slide-width) / 2) * 1px) - 80px));
+		transform: translateX(calc(50vw - ((var(--slide-width) / 2) * 1px) - 70px));
 		opacity: 1;
 	}
 	&.right {
 		transform: translateX(
-			calc(100vw - (((var(--slide-width) / 6) * 1px) + 80px))
+			calc(100vw - (((var(--slide-width) / 6) * 1px) + 70px))
 		);
 		opacity: 0;
 	}

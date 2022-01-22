@@ -12,6 +12,10 @@ function MyApp({ Component, pageProps }) {
 
 export default MyApp;
 const GlobalStyle = createGlobalStyle`
+
+	button{
+		all:unset;
+	}
   html,body{
     font-family: Inter, serif;
     color:${offBlack};
