@@ -94,11 +94,18 @@ export const SlideEntityRenderer = (props: {
 							let overDelete = isIntersecting(
 								self?.current?.getBoundingClientRect(),
 								//@ts-ignore
-								props.slideRef?.current?.getBoundingClientRect()
+								props.deleteButtonRef?.current?.getBoundingClientRect()
 							);
 							console.log("oer?", overDelete);
 							if (overDelete) {
-								// delete!!!
+								// delete the entity
+								let newSlides = [...slides];
+								let newCurrentSlide = [...newSlides[props.slideIndex]];
+								newCurrentSlide.splice(props.entityIndex, 1);
+								newSlides[props.slideIndex] = newCurrentSlide;
+								useSlideStore.setState({ slides: newSlides, dragging: false });
+								e.preventDefault();
+								return;
 							}
 							let newSlides = [...slides];
 							if (xPos < 100 && xPos > 0 && yPos < 100 && yPos > 0) {

@@ -71,6 +71,7 @@ export const Slideshow = (props: {
 										slideEntities={props.slides[index - 1]}
 										slideIndex={index - 1}
 										slideRef={leftSlideRef}
+										deleteButtonRef={deleteButtonRef}
 										editable={false}
 									/>
 								</Slide>
@@ -170,6 +171,7 @@ export const Slideshow = (props: {
 										slideEntities={props.slides[index + 1]}
 										slideIndex={index + 1}
 										slideRef={rightSlideRef}
+										deleteButtonRef={deleteButtonRef}
 										editable={false}
 									/>
 								</Slide>

@@ -5,7 +5,7 @@ export const isIntersecting = (rect1: DOMRect, rect2: DOMRect): boolean => {
 		rect1.bottom - rect1.height < rect2.bottom &&
 		rect1.right - rect1.width < rect2.right
 	) {
-		return false;
+		return true;
 	}
-	return true;
+	return false;
 };
