@@ -5,7 +5,7 @@ export const Text = (props: { slideEntity: TextElement }) => {
 	return (
 		<div>
 			{props.slideEntity.content}
-			<RichTextExample />
+			{/* <RichTextExample /> */}
 		</div>
 	);
 };
