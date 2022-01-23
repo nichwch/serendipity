@@ -87,7 +87,9 @@ export const SlideEntityRenderer = (props: {
 				{slideEntity.type === "text" ? (
 					<Text slideEntity={slideEntity} />
 				) : null}
-				{slideEntity.type === "image" ? <p>{slideEntity.imgcontent}</p> : null}
+				{slideEntity.type === "image" ? (
+					<div>{slideEntity.imgcontent}</div>
+				) : null}
 			</Entity>
 			{props.editable ? (
 				<DragHandleContainer

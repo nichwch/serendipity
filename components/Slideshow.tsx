@@ -187,9 +187,6 @@ export const Slideshow = (props: {
 					) : null}
 				</TransitionGroup>
 			</SlidesContainer>
-			<button onClick={slideLeft}>left</button>
-			<button onClick={slideRight}>right</button>
-			{index}
 		</>
 	);
 };
