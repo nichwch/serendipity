@@ -24,6 +24,8 @@ const GlobalStyle = createGlobalStyle`
 	height:100vh;
 	width:100vw;
 	background-color: #f7f7f7;
+
+	overflow-x: hidden;
   }
 
 /* debug */

@@ -336,5 +336,4 @@ const SlidesContainer = styled.div`
 	position: relative;
 	height: 600px;
 	width: 100vw;
-	overflow-x: hidden;
 `;
