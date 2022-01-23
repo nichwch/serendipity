@@ -135,13 +135,9 @@ export const Slideshow = (props: {
 								key={index}
 								className="center"
 								ref={middleSlideRef}
-								style={
-									dragging
-										? {
-												overflow: "visible",
-										  }
-										: {}
-								}
+								style={{
+									overflow: "visible",
+								}}
 							>
 								<SlideComponent
 									slideEntities={props.slides[index]}

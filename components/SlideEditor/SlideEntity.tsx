@@ -78,10 +78,10 @@ export const SlideEntityRenderer = (props: {
 				ref={self}
 				style={{
 					opacity: isDragging ? 0.2 : 1,
-					left: `${isDragging ? xPos : slideEntity.xPos}%`,
-					top: `calc(${
-						isDragging ? yPos : slideEntity.yPos
-					}% + ${DragHandleHeight}px)`,
+					left: `calc(${
+						isDragging ? xPos : slideEntity.xPos
+					}% + ${DragHandleHeight}px + 10px)`,
+					top: `${isDragging ? yPos : slideEntity.yPos}%   `,
 				}}
 			>
 				{slideEntity.type === "text" ? (
@@ -126,7 +126,13 @@ export const SlideEntityRenderer = (props: {
 							return;
 						}
 						let newSlides = [...slides];
-						if (xPos < 100 && xPos > 0 && yPos < 100 && yPos > 0) {
+
+						let inBounds = isIntersecting(
+							self?.current?.getBoundingClientRect(),
+							//@ts-ignore
+							props.slideRef?.current?.getBoundingClientRect()
+						);
+						if (inBounds) {
 							newSlides[props.slideIndex][props.entityIndex].xPos = xPos;
 							newSlides[props.slideIndex][props.entityIndex].yPos = yPos;
 						}
