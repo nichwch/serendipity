@@ -131,7 +131,18 @@ export const Slideshow = (props: {
 									</HiddenControlButton>
 								</ControlButtonContainer>
 							)}
-							<Slide key={index} className="center" ref={middleSlideRef}>
+							<Slide
+								key={index}
+								className="center"
+								ref={middleSlideRef}
+								style={
+									dragging
+										? {
+												overflow: "visible",
+										  }
+										: {}
+								}
+							>
 								<SlideComponent
 									slideEntities={props.slides[index]}
 									slideIndex={index}
@@ -222,6 +233,8 @@ const Slide = styled.div`
 	}
 
 	box-shadow: 0px 0px 15px 5px rgba(0, 0, 0, 0.22);
+
+	overflow: hidden;
 `;
 
 const AnimationFrame = styled.div`
